@@ -7,6 +7,7 @@ namespace Travel.Application.Common.Mappings;
 
 public class MappingProfile:Profile
 {
+    public MappingProfile() => ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
     private void ApplyMappingsFromAssembly(Assembly assembly)
     {
         var types = assembly.GetExportedTypes().Where(x =>
