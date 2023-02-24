@@ -4,6 +4,13 @@
     <ProjectReference Include="..\..\core\Travel.Application\Travel.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="MailKit" Version="3.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="MimeKit" Version="3.5.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>

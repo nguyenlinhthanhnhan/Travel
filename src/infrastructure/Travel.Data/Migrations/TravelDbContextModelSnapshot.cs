@@ -9,7 +9,7 @@ using Travel.Data.Contexts;
 
 namespace Travel.Data.Migrations
 {
-    [DbContext(typeof(TravelDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class TravelDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
