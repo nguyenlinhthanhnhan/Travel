@@ -4,6 +4,6 @@ namespace Travel.Application.Common.Interfaces
 {
     public interface IDateTime
     {
-        DateTime NowUtc { get; set; }
+        DateTime NowUtc { get; }
     }
 }
