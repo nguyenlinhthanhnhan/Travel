@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Travel.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public abstract class ApiController:ControllerBase
 {
     private IMediator _mediator;
