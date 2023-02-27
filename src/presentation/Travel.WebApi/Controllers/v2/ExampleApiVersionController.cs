@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Travel.WebApi.Controllers.v1;
 
 namespace Travel.WebApi.Controllers.v2;
 
