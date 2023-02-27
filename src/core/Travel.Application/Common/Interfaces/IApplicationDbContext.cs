@@ -9,6 +9,7 @@ namespace Travel.Application.Common.Interfaces
     {
         DbSet<TourList> TourLists { get; set; }
         DbSet<TourPackage> TourPackages { get; set; }
+        DbSet<User> Users { get; set; }
         Task<int> SaveChangesAsync(CancellationToken
             cancellationToken);
     }

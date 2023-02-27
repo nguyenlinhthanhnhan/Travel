@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel.Data.Contexts;
 
@@ -10,9 +11,11 @@ using Travel.Data.Contexts;
 namespace Travel.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class TravelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230227160324_Add_User_Table")]
+    partial class Add_User_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

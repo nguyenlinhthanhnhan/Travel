@@ -19,6 +19,7 @@ public class ApplicationDbContext:DbContext, IApplicationDbContext
     
     public DbSet<TourList> TourLists { get; set; }
     public DbSet<TourPackage> TourPackages { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTime dateTime) : base(options)
     {

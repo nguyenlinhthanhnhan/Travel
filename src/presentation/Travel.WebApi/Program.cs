@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
@@ -9,6 +10,8 @@ using Serilog.Sinks.MSSqlServer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Travel.Application;
 using Travel.Data;
+using Travel.Identity;
+using Travel.Identity.Helpers;
 using Travel.Shared;
 using Travel.WebApi;
 using Travel.WebApi.Filters;
@@ -27,6 +30,9 @@ builder.Services.AddInfrastructureData(travelDbConnectionString);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructureShared(builder.Configuration);
+builder.Services.AddInfrastructureIdentity(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,9 +48,31 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 // Swagger configs
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen(config =>
 {
-    options.OperationFilter<SwaggerDefaultValues>();
+    config.OperationFilter<SwaggerDefaultValues>();
+    config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    config.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
 });
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddApiVersioning(config =>
@@ -78,6 +106,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthorization();
 
