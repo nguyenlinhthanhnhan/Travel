@@ -15,6 +15,7 @@ using Travel.WebApi.Filters;
 using Travel.WebApi.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddSerilog();
 
 // Add services to the container.
 var travelDbConnectionString =
