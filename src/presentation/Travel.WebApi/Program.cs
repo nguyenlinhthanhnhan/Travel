@@ -1,9 +1,13 @@
 using System.Configuration;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Travel.Application;
 using Travel.Data;
@@ -18,6 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var travelDbConnectionString =
     builder.Configuration.GetSection("ConnectionStrings").Get<Settings>()?.TravelDbConnectionString;
+var serilogDbConnectionString =
+    builder.Configuration.GetSection("ConnectionStrings").Get<Settings>()?.SerilogDbConnectionString;
+
 builder.Services.AddInfrastructureData(travelDbConnectionString);
 
 builder.Services.AddApplication();
@@ -78,4 +85,30 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+var assemblyName = Assembly.GetExecutingAssembly().GetName();
+Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
+    .Enrich.FromLogContext()
+    .Enrich.WithExceptionDetails()
+    .Enrich.WithMachineName()
+    .Enrich.WithProperty("Assembly", $"{assemblyName.Name}")
+    .Enrich.WithProperty("Assembly", $"{assemblyName.Version}")
+    .WriteTo.MSSqlServer(serilogDbConnectionString, tableName: "TravelLog",
+        restrictedToMinimumLevel: LogEventLevel.Information)
+    .WriteTo.Console()
+    .CreateLogger();
+
+try
+{
+    Log.Information("Starting host");
+    app.Run();
+    return 0;
+}
+catch (Exception e)
+{
+    Log.Fatal(e, "Host terminated unexpectedly");
+    return 1;
+}
+finally
+{
+    Log.CloseAndFlush();
+}
