@@ -1,17 +1,14 @@
-using System.Configuration;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
+using Serilog.Sinks.MSSqlServer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Travel.Application;
 using Travel.Data;
-using Travel.Data.Contexts;
 using Travel.Shared;
 using Travel.WebApi;
 using Travel.WebApi.Filters;
@@ -92,8 +89,10 @@ Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
     .Enrich.WithMachineName()
     .Enrich.WithProperty("Assembly", $"{assemblyName.Name}")
     .Enrich.WithProperty("Assembly", $"{assemblyName.Version}")
-    .WriteTo.MSSqlServer(serilogDbConnectionString, tableName: "TravelLog",
-        restrictedToMinimumLevel: LogEventLevel.Information)
+    .WriteTo.MSSqlServer(serilogDbConnectionString, sinkOptions: new MSSqlServerSinkOptions
+    {
+        TableName = "TravelLog"
+    }, restrictedToMinimumLevel: LogEventLevel.Information)
     .WriteTo.Console()
     .CreateLogger();
 
