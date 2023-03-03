@@ -14,6 +14,7 @@ using Travel.Identity;
 using Travel.Identity.Helpers;
 using Travel.Shared;
 using Travel.WebApi;
+using Travel.WebApi.Extensions;
 using Travel.WebApi.Filters;
 using Travel.WebApi.Helpers;
 
@@ -28,7 +29,7 @@ var serilogDbConnectionString =
 
 builder.Services.AddInfrastructureData(travelDbConnectionString);
 
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructureShared(builder.Configuration);
 builder.Services.AddInfrastructureIdentity(builder.Configuration);
 
@@ -48,44 +49,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 // Swagger configs
-builder.Services.AddSwaggerGen(config =>
-{
-    config.OperationFilter<SwaggerDefaultValues>();
-    config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer"
-    });
-    config.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddApiVersioningExtension();
+builder.Services.AddVersionedApiExplorerExtension();
+builder.Services.AddSwaggerGenExtension();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddApiVersioning(config =>
-{
-    config.DefaultApiVersion = new ApiVersion(1, 0);
-    config.AssumeDefaultVersionWhenUnspecified = true;
-    config.ReportApiVersions = true;
-});
-builder.Services.AddVersionedApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
-});
+
 
 var app = builder.Build();
 
@@ -94,15 +62,8 @@ var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>()
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(config =>
-    {
-        foreach (var description in provider.ApiVersionDescriptions)
-        {
-            config.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-        }
-    });
+    app.UseDeveloperExceptionPage();
+    app.UseSwaggerExtension(provider);
 }
 
 app.UseHttpsRedirection();
