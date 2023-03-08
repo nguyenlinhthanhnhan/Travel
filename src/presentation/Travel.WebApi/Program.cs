@@ -23,9 +23,9 @@ builder.Logging.AddSerilog();
 
 // Add services to the container.
 var travelDbConnectionString =
-    builder.Configuration.GetSection("ConnectionStrings").Get<Settings>()?.TravelDbConnectionString;
+    builder.Configuration.GetSection("ConnectionStrings").Get<AppSettings>()?.TravelDbConnectionString;
 var serilogDbConnectionString =
-    builder.Configuration.GetSection("ConnectionStrings").Get<Settings>()?.SerilogDbConnectionString;
+    builder.Configuration.GetSection("ConnectionStrings").Get<AppSettings>()?.SerilogDbConnectionString;
 
 builder.Services.AddInfrastructureData(travelDbConnectionString);
 
