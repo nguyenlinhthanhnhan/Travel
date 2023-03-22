@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Travel.Application.TourLists.Commands.CreateTourList;
 using Travel.Application.TourLists.Commands.DeleteTourList;
 using Travel.Application.TourLists.Commands.UpdateTourList;
 using Travel.Application.TourLists.Queries.ExportTours;
 using Travel.Application.TourLists.Queries.GetTours;
-using Travel.Application.TourPackages.Commands.CreateTourPackage;
 
 namespace Travel.WebApi.Controllers.v1;
 
@@ -22,7 +22,7 @@ public class TourListsController : ApiController
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create(CreateTourPackageCommand command) => await Mediator.Send(command);
+    public async Task<ActionResult<int>> Create(CreateTourListCommand command) => await Mediator.Send(command);
 
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, UpdateTourListCommand command)
