@@ -1,0 +1,4 @@
+
+\csharpsquid:S4136"?All 'ApplicationDbContext' method overloads should be adjacent.(Çæ£
+rcsharpsquid:S927S"QRename parameter 'builder' to 'modelBuilder' to match the base class declaration.(çŒ¦ùÿÿÿÿ
+ucsharpsquid:S4487"SRemove this unread private field '_dateTime' or refactor the code to use its value.(¶Îùûÿÿÿÿ
